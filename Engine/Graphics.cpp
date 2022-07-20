@@ -25,6 +25,7 @@
 #include <assert.h>
 #include <string>
 #include <array>
+#include <cmath>
 
 // Ignore the intellisense error "cannot open source file" for .shh files.
 // They will be created during the build sequence before the preprocessor runs.
@@ -340,6 +341,25 @@ void Graphics::DrawRect(int x, int y, int width, int height, Color c, bool fill,
 					pSysBuffer[Graphics::ScreenWidth * (y + i) + x + j] = c;
 			}
 			
+		}
+	}
+}
+
+void Graphics::DrawCircle(int x, int y, int radius, Color c, bool fill, int weight)
+{
+	assert(x >= radius);
+	assert(x + radius < int(Graphics::ScreenWidth));
+	assert(y >= radius);
+	assert(y + radius < int(Graphics::ScreenHeight));
+	for (int i = y - radius; i <= y + radius; i++)
+	{
+		for (int j = x - radius; j <= x + radius; j++)
+		{
+			int d = (int)std::sqrt(((x - j) * (x - j)) + ((y - i) * (y - i)));
+			if ( d <= radius && ((fill) || (d >= radius - weight) ))
+			{
+				pSysBuffer[Graphics::ScreenWidth * i + j] = c;
+			}
 		}
 	}
 }
