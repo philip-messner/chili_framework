@@ -316,6 +316,34 @@ void Graphics::PutPixel( int x,int y,Color c )
 	pSysBuffer[Graphics::ScreenWidth * y + x] = c;
 }
 
+void Graphics::DrawRect(int x, int y, int width, int height, Color c, bool fill, int weight)
+{
+	assert(x >= 0);
+	assert(width > 0);
+	assert(x + width < int(Graphics::ScreenWidth));
+	assert(y >= 0);
+	assert(height > 0);
+	assert(y + height < int(Graphics::ScreenHeight));
+	assert(weight > 0);
+	
+	for (int i = 0; i < height; i++)
+	{
+		for (int j = 0; j < width; j++)
+		{
+			if ( (fill) || (i < weight) || (i >= height - weight))
+			{
+				pSysBuffer[Graphics::ScreenWidth * (y + i) + x + j] = c;
+			}
+			else
+			{
+				if ((j < weight) || (j >= width - weight) )
+					pSysBuffer[Graphics::ScreenWidth * (y + i) + x + j] = c;
+			}
+			
+		}
+	}
+}
+
 
 //////////////////////////////////////////////////
 //           Graphics Exception
