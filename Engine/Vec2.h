@@ -5,7 +5,7 @@ class Vec2
 {
 public:
 	Vec2() = default;
-	Vec2(T x_in, T x_out)
+	Vec2(T x_in, T y_in)
 		:
 		x(x_in),
 		y(y_in)

@@ -42,4 +42,5 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {
+	gfx.DrawLine({ 50.0f, 50.0f }, { 500.0f, 100.0f }, Colors::Cyan);
 }
