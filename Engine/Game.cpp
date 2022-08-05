@@ -42,5 +42,10 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {
-	gfx.DrawLine({ 50.0f, 50.0f }, { 500.0f, 100.0f }, Colors::Cyan);
+	if (wnd.mouse.LeftIsPressed())
+	{
+		auto tmp = Vec2<float>((float)wnd.mouse.GetPosX(), (float)wnd.mouse.GetPosY());
+		
+		gfx.DrawLine({ 50.0f, 50.0f }, tmp, Colors::Cyan);
+	}
 }
