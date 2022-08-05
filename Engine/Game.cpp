@@ -48,4 +48,5 @@ void Game::ComposeFrame()
 		
 		gfx.DrawLine({ 50.0f, 50.0f }, tmp, Colors::Cyan);
 	}
+	gfx.DrawClosedPolyline({ {10.0f, 10.0f}, {100.0f, 100.0f}, {10.0f, 100.0f} }, Colors::White);
 }
