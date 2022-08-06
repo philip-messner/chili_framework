@@ -20,6 +20,7 @@
  ******************************************************************************************/
 #include "MainWindow.h"
 #include "Game.h"
+#include "Star.h"
 
 Game::Game( MainWindow& wnd )
 	:
@@ -48,5 +49,10 @@ void Game::ComposeFrame()
 		
 		gfx.DrawLine({ 50.0f, 50.0f }, tmp, Colors::Cyan);
 	}
-	gfx.DrawClosedPolyline({ {10.0f, 10.0f}, {100.0f, 100.0f}, {10.0f, 100.0f} }, Colors::White);
+	auto poly = Star::Make(150.0f, 75.0f);
+	for (auto& v : poly)
+	{
+		v += Vec2<float>(200.0f, 200.0f);
+	}
+	gfx.DrawClosedPolyline(poly, Colors::White);
 }
