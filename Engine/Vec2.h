@@ -37,7 +37,7 @@ public:
 	}
 	Vec2& operator-=(const Vec2& rhs)
 	{
-		return *this = *this + rhs;
+		return *this = *this - rhs;
 	}
 	T GetLength() const
 	{

@@ -23,13 +23,20 @@
 #include "Star.h"
 #include "CoordinateTransformer.h"
 
-Game::Game( MainWindow& wnd )
+Game::Game(MainWindow& wnd)
 	:
-	wnd( wnd ),
-	gfx( wnd ),
-	ct( gfx ),
-	e1(Star::Make(150.0f, 75.0f))
+	wnd(wnd),
+	gfx(wnd),
+	ct(gfx),
+	cam(ct)
 {
+	entities.emplace_back(Star::Make(100.0f, 50.0f), Vec2<float>(450.0f, 0.0f));
+	entities.emplace_back(Star::Make(150.0f, 50.0f), Vec2<float>(150.0f, 100.0f));
+	entities.emplace_back(Star::Make(100.0f, 50.0f), Vec2<float>(250.0f, -200.0f));
+	entities.emplace_back(Star::Make(150.0f, 50.0f), Vec2<float>(-250.0f, 200.0f));
+	entities.emplace_back(Star::Make(100.0f, 50.0f), Vec2<float>(0.0f, 0.0f));
+	entities.emplace_back(Star::Make(200.0f, 50.0f), Vec2<float>(-150.0f, -300.0f));
+	entities.emplace_back(Star::Make(100.0f, 50.0f), Vec2<float>(400.0f, 300.0f));
 }
 
 void Game::Go()
@@ -45,31 +52,34 @@ void Game::UpdateModel()
 	const float speed = 3.0f;
 	if (wnd.kbd.KeyIsPressed(VK_DOWN))
 	{
-		e1.TranslateBy({ 0.0f, -1.0f * speed });
+		cam.MoveBy({ 0.0f, -1.0f * speed });
 	}
 	if (wnd.kbd.KeyIsPressed(VK_UP))
 	{
-		e1.TranslateBy({ 0.0f, speed });
+		cam.MoveBy({ 0.0f, speed });
 	}
 	if (wnd.kbd.KeyIsPressed(VK_LEFT))
 	{
-		e1.TranslateBy({ -1.0f * speed, 0.0f });
+		cam.MoveBy({ -1.0f * speed, 0.0f });
 	}
 	if (wnd.kbd.KeyIsPressed(VK_RIGHT))
 	{
-		e1.TranslateBy({ speed, 0.0f });
+		cam.MoveBy({ speed, 0.0f });
 	}
-	if (wnd.kbd.KeyIsPressed('Q'))
+	/*if (wnd.kbd.KeyIsPressed('Q'))
 	{
-		e1.SetScale(e1.GetScale() * 1.05f);
+		cam.SetScale(cam.GetScale() * 1.05f);
 	}
 	if (wnd.kbd.KeyIsPressed('A'))
 	{
-		e1.SetScale(e1.GetScale() * 0.95f);
-	}
+		cam.SetScale(cam.GetScale() * 0.95f);
+	}*/
 }
 
 void Game::ComposeFrame()
 {
-	ct.DrawClosedPolyline(e1.GetPolyLine(), Colors::White);
+	for (const auto& entity : entities)
+	{
+		cam.DrawClosedPolyline(entity.GetPolyLine(), Colors::White);
+	}
 }
