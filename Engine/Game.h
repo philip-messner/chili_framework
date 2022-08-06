@@ -24,6 +24,7 @@
 #include "Mouse.h"
 #include "Graphics.h"
 #include "CoordinateTransformer.h"
+#include "Entity.h"
 
 class Game
 {
@@ -45,4 +46,5 @@ private:
 	/*  User Variables              */
 	/********************************/
 	CoordinateTransformer ct;
+	Entity e1;
 };

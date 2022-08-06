@@ -27,7 +27,8 @@ Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
 	gfx( wnd ),
-	ct( gfx )
+	ct( gfx ),
+	e1(Star::Make(150.0f, 75.0f))
 {
 }
 
@@ -41,20 +42,26 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
+	const float speed = 3.0f;
+	if (wnd.kbd.KeyIsPressed(VK_DOWN))
+	{
+		e1.TranslateBy({ 0.0f, -1.0f * speed });
+	}
+	if (wnd.kbd.KeyIsPressed(VK_UP))
+	{
+		e1.TranslateBy({ 0.0f, speed });
+	}
+	if (wnd.kbd.KeyIsPressed(VK_LEFT))
+	{
+		e1.TranslateBy({ -1.0f * speed, 0.0f });
+	}
+	if (wnd.kbd.KeyIsPressed(VK_RIGHT))
+	{
+		e1.TranslateBy({ speed, 0.0f });
+	}
 }
 
 void Game::ComposeFrame()
 {
-	if (wnd.mouse.LeftIsPressed())
-	{
-		auto tmp = Vec2<float>((float)wnd.mouse.GetPosX(), (float)wnd.mouse.GetPosY());
-		
-		gfx.DrawLine({ 50.0f, 50.0f }, tmp, Colors::Cyan);
-	}
-	auto poly = Star::Make(150.0f, 75.0f);
-	for (auto& v : poly)
-	{
-		v += Vec2<float>(200.0f, 200.0f);
-	}
-	ct.DrawClosedPolyline(poly, Colors::White);
+	ct.DrawClosedPolyline(e1.GetPolyLine(), Colors::White);
 }
