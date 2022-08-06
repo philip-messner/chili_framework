@@ -6,7 +6,7 @@
 class Entity
 {
 public:
-	Entity(std::vector<Vec2<float>> model);
+	Entity(std::vector<Vec2<float>> model, const Vec2<float> pos = {0.0f, 0.0f});
 	const Vec2<float> GetPos() const;
 	void SetPos(const Vec2<float>& newPos);
 	void TranslateBy(const Vec2<float>& offset);

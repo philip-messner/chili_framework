@@ -1,9 +1,9 @@
 #include "Entity.h"
 
-Entity::Entity(std::vector<Vec2<float>> model)
+Entity::Entity(std::vector<Vec2<float>> model, const Vec2<float> pos)
 	:
 	model(std::move(model)),
-	pos(0.0f, 0.0f)
+	pos( pos )
 {}
 
 const Vec2<float> Entity::GetPos() const
