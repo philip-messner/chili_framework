@@ -66,14 +66,14 @@ void Game::UpdateModel()
 	{
 		cam.MoveBy({ speed, 0.0f });
 	}
-	/*if (wnd.kbd.KeyIsPressed('Q'))
+	if (wnd.kbd.KeyIsPressed('Q'))
 	{
-		cam.SetScale(cam.GetScale() * 1.05f);
+		cam.SetZoom(cam.GetZoom() * 1.05f);
 	}
 	if (wnd.kbd.KeyIsPressed('A'))
 	{
-		cam.SetScale(cam.GetScale() * 0.95f);
-	}*/
+		cam.SetZoom(cam.GetZoom() * 0.95f);
+	}
 }
 
 void Game::ComposeFrame()
