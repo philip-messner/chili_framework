@@ -26,7 +26,18 @@ std::vector<Vec2<float>> Entity::GetPolyLine() const
 	auto poly = model;
 	for (auto& v : poly)
 	{
+		v *= scale;
 		v += pos;
 	}
 	return poly;
+}
+
+float Entity::GetScale() const
+{
+	return scale;
+}
+
+void Entity::SetScale(float newScale)
+{
+	scale = newScale;
 }

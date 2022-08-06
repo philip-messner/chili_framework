@@ -59,6 +59,14 @@ void Game::UpdateModel()
 	{
 		e1.TranslateBy({ speed, 0.0f });
 	}
+	if (wnd.kbd.KeyIsPressed('Q'))
+	{
+		e1.SetScale(e1.GetScale() * 1.05f);
+	}
+	if (wnd.kbd.KeyIsPressed('A'))
+	{
+		e1.SetScale(e1.GetScale() * 0.95f);
+	}
 }
 
 void Game::ComposeFrame()
