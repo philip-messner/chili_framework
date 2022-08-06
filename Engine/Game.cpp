@@ -21,11 +21,13 @@
 #include "MainWindow.h"
 #include "Game.h"
 #include "Star.h"
+#include "CoordinateTransformer.h"
 
 Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
-	gfx( wnd )
+	gfx( wnd ),
+	ct( gfx )
 {
 }
 
@@ -54,5 +56,5 @@ void Game::ComposeFrame()
 	{
 		v += Vec2<float>(200.0f, 200.0f);
 	}
-	gfx.DrawClosedPolyline(poly, Colors::White);
+	ct.DrawClosedPolyline(poly, Colors::White);
 }
