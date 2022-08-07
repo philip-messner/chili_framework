@@ -5,14 +5,12 @@ CoordinateTransformer::CoordinateTransformer(Graphics& gfx)
 	gfx(gfx)
 {}
 
-void CoordinateTransformer::DrawClosedPolyline(std::vector<Vec2<float>> poly, Color c)
+void CoordinateTransformer::Draw(Drawable& drawable) const
 {
-	Vec2<float> offset((float)(Graphics::ScreenWidth / 2), (float)(Graphics::ScreenHeight / 2));
-	for (auto& v : poly)
-	{
-		v.y *= -1.0f;
-		v += offset;
-	}
-	gfx.DrawClosedPolyline(poly, c);
+	const Vec2<float> offset((float)(Graphics::ScreenWidth / 2), (float)(Graphics::ScreenHeight / 2));
+	
+	drawable.ScaleIndependent(1.0f, -1.0f);
+	drawable.Translate(offset);
+	drawable.Render(gfx);
 }
 

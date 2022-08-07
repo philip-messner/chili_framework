@@ -1,9 +1,11 @@
 #include "Entity.h"
 
-Entity::Entity(std::vector<Vec2<float>> model, const Vec2<float> pos)
+Entity::Entity(std::vector<Vec2<float>> model, const Vec2<float> pos, Color c)
 	:
 	model(std::move(model)),
-	pos( pos )
+	pos( pos ),
+	c ( c )
+
 {}
 
 const Vec2<float> Entity::GetPos() const
@@ -21,16 +23,6 @@ void Entity::TranslateBy(const Vec2<float>& offset)
 	pos += offset;
 }
 
-std::vector<Vec2<float>> Entity::GetPolyLine() const
-{
-	auto poly = model;
-	for (auto& v : poly)
-	{
-		v *= scale;
-		v += pos;
-	}
-	return poly;
-}
 
 float Entity::GetScale() const
 {
@@ -40,4 +32,13 @@ float Entity::GetScale() const
 void Entity::SetScale(float newScale)
 {
 	scale = newScale;
+}
+
+Drawable Entity::GetDrawable() const
+{
+	Drawable d(model, c);
+	d.Scale(scale);
+	d.Translate(pos);
+
+	return d;
 }

@@ -20,14 +20,11 @@ void Camera::MoveTo(const Vec2<float>& newPos)
 	pos = newPos;
 }
 
-void Camera::DrawClosedPolyline(std::vector<Vec2<float>> poly, Color c)
+void Camera::Draw(Drawable& drawable) const
 {
-	for (auto& v : poly)
-	{
-		v -= pos;
-		v *= zoom;
-	}
-	ct.DrawClosedPolyline(std::move(poly), c);
+	drawable.Translate(pos * -1.0f);
+	drawable.Scale(zoom);
+	ct.Draw(drawable);
 }
 
 void Camera::SetZoom(const float newZoom)

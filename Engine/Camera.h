@@ -3,6 +3,7 @@
 #include <vector>
 #include "Vec2.h"
 #include "CoordinateTransformer.h"
+#include "Drawable.h"
 
 class Camera
 {
@@ -11,7 +12,7 @@ public:
 	Vec2<float> GetPos() const;
 	void MoveBy(const Vec2<float>& offset);
 	void MoveTo(const Vec2<float>& newPos);
-	void DrawClosedPolyline(std::vector<Vec2<float>> poly, Color c);
+	void Draw(Drawable& drawable) const;
 	void SetZoom(const float newZoom);
 	float GetZoom() const;
 private:
