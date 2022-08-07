@@ -372,7 +372,7 @@ void Graphics::DrawLine(Vec2<float> p0, Vec2<float> p1, Color c)
 		{
 			std::swap(p0, p1);
 		}
-		for (int y = (int)p0.y; y < (int)p1.y; y++)
+		for (int y = (int)p0.y; y <= (int)p1.y; y++)
 		{
 			int x = (int)p0.x;
 			if (x >= 0 && x < Graphics::ScreenWidth && y >= 0 && y < Graphics::ScreenHeight)
@@ -392,7 +392,7 @@ void Graphics::DrawLine(Vec2<float> p0, Vec2<float> p1, Color c)
 		if (std::abs(m) <= 1.0f)
 		{
 			const float b = p0.y - m * p0.x;
-			for (int x = (int)p0.x; x < (int)p1.x; x++)
+			for (int x = (int)p0.x; x <= (int)p1.x; x++)
 			{
 				const float y = m * (float)x + b;
 				const int yClip = (int)y;
@@ -410,7 +410,7 @@ void Graphics::DrawLine(Vec2<float> p0, Vec2<float> p1, Color c)
 			}
 			const float w = (p1.x - p0.x) / (p1.y - p0.y);
 			const float p = p0.x - w * p0.y;
-			for (int y = (int)p0.y; y < (int)p1.y; y++)
+			for (int y = (int)p0.y; y <= (int)p1.y; y++)
 			{
 				const float x = w * (float)y + p;
 				const int xClip = (int)x;
