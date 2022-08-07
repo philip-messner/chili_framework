@@ -425,6 +425,28 @@ void Graphics::DrawLine(Vec2<float> p0, Vec2<float> p1, Color c)
 
 }
 
+void Graphics::DrawClosedPolyline(const std::vector<Vec2<float>>& verts, const Vec2<float>& translation, float scale_x, float scale_y, Color c)
+{
+	const auto xform = [&](Vec2<float> v)
+	{
+		v.x *= scale_x;
+		v.y *= scale_y;
+		v += translation;
+		return v;
+	};
+
+	const Vec2<float> front = xform(verts.front());
+	Vec2<float> cur = front;
+	for (auto i = verts.begin(); i != std::prev(verts.end()); i++)
+	{
+		const Vec2<float> next = xform(*std::next(i));
+		DrawLine(cur, next, c);
+		cur = next;
+	}
+	DrawLine(cur, front, c);
+}
+
+
 void Graphics::DrawClosedPolyline(const std::vector<Vec2<float>>& verts, Color c)
 {
 	for (auto i = verts.begin(); i != std::prev(verts.end()); i++)
@@ -433,6 +455,8 @@ void Graphics::DrawClosedPolyline(const std::vector<Vec2<float>>& verts, Color c
 	}
 	DrawLine(verts.back(), verts.front(), c);
 }
+
+
 
 
 //////////////////////////////////////////////////

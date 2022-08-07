@@ -1,10 +1,9 @@
 #include "Drawable.h"
 
-Drawable::Drawable(std::vector<Vec2<float>> model, Color c)
+Drawable::Drawable(const std::vector<Vec2<float>>& model, Color c)
 	:
-	model(std::move(model)),
+	model(&model),
 	c( c )
-	
 {}
 
 void Drawable::Translate(const Vec2<float>& translate_in)
@@ -27,13 +26,7 @@ void Drawable::ScaleIndependent(float scale_in_x, float scale_in_y)
 	translation.y *= scale_in_y;
 }
 
-void Drawable::Render(Graphics& gfx)
+void Drawable::Render(Graphics& gfx) const
 {
-	for (auto& v : model)
-	{
-		v.x *= scale_x;
-		v.y *= scale_y;
-		v += translation;
-	}
-	gfx.DrawClosedPolyline(model, c);
+	gfx.DrawClosedPolyline(*model, translation, scale_x, scale_y, c);
 }

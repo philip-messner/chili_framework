@@ -62,8 +62,9 @@ public:
 	void DrawRect(int x, int y, int width, int height, Color c, bool fill = true, int weight = 1);
 	void DrawCircle(int x, int y, int radius, Color c, bool fill = true, int weight = 1);
 	void DrawLine(Vec2<float> p0, Vec2<float> p1, Color c);
+	void DrawClosedPolyline(const std::vector<Vec2<float>>& verts, const Vec2<float>& translation, float scale_x, float scale_y, Color c);
 	void DrawClosedPolyline(const std::vector<Vec2<float>>& verts, Color c);
-
+	
 	~Graphics();
 private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain>				pSwapChain;
