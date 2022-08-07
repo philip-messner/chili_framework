@@ -35,6 +35,11 @@ public:
 	{
 		return Vec2(x - rhs.x, y - rhs.y);
 	}
+
+	Vec2 operator-() const
+	{
+		return Vec2(-x, -y);
+	}
 	Vec2& operator-=(const Vec2& rhs)
 	{
 		return *this = *this - rhs;

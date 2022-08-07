@@ -34,6 +34,16 @@ void Entity::SetScale(float newScale)
 	scale = newScale;
 }
 
+Color Entity::GetColor() const
+{
+	return c;
+}
+
+void Entity::SetColor(Color newColor)
+{
+	c = newColor;
+}
+
 Drawable Entity::GetDrawable() const
 {
 	Drawable d(model, c);

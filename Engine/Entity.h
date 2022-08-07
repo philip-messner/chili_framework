@@ -13,6 +13,8 @@ public:
 	void TranslateBy(const Vec2<float>& offset);
 	float GetScale() const;
 	void SetScale(float newScale);
+	Color GetColor() const;
+	void SetColor(Color newColor);
 	Drawable GetDrawable() const;
 
 private:
