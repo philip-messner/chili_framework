@@ -3,6 +3,7 @@
 #include <vector>
 #include "Vec2.h"
 #include "Drawable.h"
+#include "Rect.h"
 
 class Entity
 {
@@ -16,11 +17,12 @@ public:
 	Color GetColor() const;
 	void SetColor(Color newColor);
 	Drawable GetDrawable() const;
+	Rect<float> GetBoundingRect() const;
 
 private:
 	std::vector<Vec2<float>> model;
 	Vec2<float> pos;
 	float scale = 1.0f;
 	Color c;
-
+	Rect<float> boundingRect = {0.0f, 0.0f, 0.0f, 0.0f};
 };

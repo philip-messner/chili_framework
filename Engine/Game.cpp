@@ -22,6 +22,7 @@
 #include "Game.h"
 #include "Star.h"
 #include "CoordinateTransformer.h"
+#include <iostream>
 
 
 Game::Game(MainWindow& wnd)
@@ -90,6 +91,13 @@ void Game::UpdateModel()
 	if (wnd.kbd.KeyIsPressed('A'))
 	{
 		cam.SetZoom(cam.GetZoom() * 0.95f);
+	}
+	if (wnd.kbd.KeyIsPressed('T'))
+	{
+		if (testRect.isOverlappingWith(testRect2))
+		{
+			cam.SetZoom(cam.GetZoom() * 0.95f);
+		}
 	}
 }
 
