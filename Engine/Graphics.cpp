@@ -253,6 +253,108 @@ Graphics::~Graphics()
 	if( pImmediateContext ) pImmediateContext->ClearState();
 }
 
+bool Graphics::CohenSutherlandLineClip(Vec2<float>& p0, Vec2<float>& p1)
+{
+	const uint8_t INSIDE = 0u;
+	const uint8_t LEFT = 1u;
+	const uint8_t RIGHT = 2u;
+	const uint8_t BOTTOM = 4u;
+	const uint8_t TOP = 8u;
+
+	uint8_t code1 = GetCodeCohenSutherland(p0);
+	uint8_t code2 = GetCodeCohenSutherland(p1);
+
+	bool accept = false;
+	while (true)
+	{
+		if ((code1 == 0) && (code2 == 0))
+		{
+			// If both endpoints lie within rectangle
+			accept = true;
+			break;
+		}
+		else if (code1 & code2)
+		{
+			// If both endpoints are outside rectangle,
+			// in same region
+			break;
+		}
+		else {
+			// Some segment of line lies within the
+			// rectangle
+			uint8_t code_out;
+			float x, y;
+
+			// At least one endpoint is outside the
+			// rectangle, pick it.
+			if (code1 != 0)
+				code_out = code1;
+			else
+				code_out = code2;
+
+			// Find intersection point;
+			// using formulas y = y1 + slope * (x - x1),
+			// x = x1 + (1 / slope) * (y - y1)
+			if (code_out & TOP) {
+				// point is above the clip rectangle
+				x = p0.x + (p1.x - p0.x) * (Graphics::ScreenHeight - 1 - p0.y) / (p1.y - p0.y);
+				y = Graphics::ScreenHeight - 1;
+			}
+			else if (code_out & BOTTOM) {
+				// point is below the rectangle
+				x = p0.x + (p1.x - p0.x) * (0 - p0.y) / (p1.y - p0.y);
+				y = 0;
+			}
+			else if (code_out & RIGHT) {
+				// point is to the right of rectangle
+				y = p0.y + (p1.y - p0.y) * (Graphics::ScreenWidth - 1 - p0.x) / (p1.x - p0.x);
+				x = Graphics::ScreenWidth - 1;
+			}
+			else if (code_out & LEFT) {
+				// point is to the left of rectangle
+				y = p0.y + (p1.y - p0.y) * (0 - p0.x) / (p1.x - p0.x);
+				x = 0;
+			}
+
+			// Now intersection point x, y is found
+			// We replace point outside rectangle
+			// by intersection point
+			if (code_out == code1) {
+				p0 = { x, y };
+				code1 = GetCodeCohenSutherland(p0);
+			}
+			else {
+				p1 = { x, y };
+				code2 = GetCodeCohenSutherland(p1);
+			}
+		}
+	}
+	return accept;
+	
+}
+
+uint8_t Graphics::GetCodeCohenSutherland(Vec2<float>& point)
+{
+	const uint8_t INSIDE = 0u;
+	const uint8_t LEFT = 1u;
+	const uint8_t RIGHT = 2u;
+	const uint8_t BOTTOM = 4u;
+	const uint8_t TOP = 8u;
+
+	uint8_t code = INSIDE;
+
+	if (point.x < 0)
+		code |= LEFT;
+	else if (point.x > Graphics::ScreenWidth - 1)
+		code |= RIGHT;
+	if (point.y < 0)
+		code |= BOTTOM;
+	else if (point.y > Graphics::ScreenHeight - 1)
+		code |= TOP;
+
+	return code;
+}
+
 void Graphics::EndFrame()
 {
 	HRESULT hr;
@@ -366,6 +468,10 @@ void Graphics::DrawCircle(int x, int y, int radius, Color c, bool fill, int weig
 
 void Graphics::DrawLine(Vec2<float> p0, Vec2<float> p1, Color c)
 {
+	
+	if (!(this->CohenSutherlandLineClip(p0, p1)))
+		return;
+
 	if (p0.x == p1.x)
 	{
 		if (p0.y > p1.y)
@@ -375,10 +481,11 @@ void Graphics::DrawLine(Vec2<float> p0, Vec2<float> p1, Color c)
 		for (int y = (int)p0.y; y <= (int)p1.y; y++)
 		{
 			int x = (int)p0.x;
-			if (x >= 0 && x < Graphics::ScreenWidth && y >= 0 && y < Graphics::ScreenHeight)
+			/*if (x >= 0 && x < Graphics::ScreenWidth && y >= 0 && y < Graphics::ScreenHeight)
 			{
 				PutPixel(x, y, c);
-			}
+			}*/
+			PutPixel(x, y, c);
 		}
 	}
 	else
@@ -396,10 +503,11 @@ void Graphics::DrawLine(Vec2<float> p0, Vec2<float> p1, Color c)
 			{
 				const float y = m * (float)x + b;
 				const int yClip = (int)y;
-				if (x >= 0 && x < Graphics::ScreenWidth && yClip >= 0 && yClip < Graphics::ScreenHeight)
+				/*if (x >= 0 && x < Graphics::ScreenWidth && yClip >= 0 && yClip < Graphics::ScreenHeight)
 				{
 					PutPixel(x, yClip, c);
-				}
+				}*/
+				PutPixel(x, yClip, c);
 			}
 		}
 		else
@@ -414,10 +522,11 @@ void Graphics::DrawLine(Vec2<float> p0, Vec2<float> p1, Color c)
 			{
 				const float x = w * (float)y + p;
 				const int xClip = (int)x;
-				if (xClip >= 0 && xClip < Graphics::ScreenWidth && y >= 0 && y < Graphics::ScreenHeight)
+				/*if (xClip >= 0 && xClip < Graphics::ScreenWidth && y >= 0 && y < Graphics::ScreenHeight)
 				{
 					PutPixel(xClip, y, c);
-				}
+				}*/
+				PutPixel(xClip, y, c);
 			}
 		}
 	}

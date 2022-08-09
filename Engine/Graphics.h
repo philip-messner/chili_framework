@@ -64,8 +64,13 @@ public:
 	void DrawLine(Vec2<float> p0, Vec2<float> p1, Color c);
 	void DrawClosedPolyline(const std::vector<Vec2<float>>& verts, const Vec2<float>& translation, float scale_x, float scale_y, Color c);
 	void DrawClosedPolyline(const std::vector<Vec2<float>>& verts, Color c);
-	
+
 	~Graphics();
+
+private:
+	bool CohenSutherlandLineClip(Vec2<float>& p0, Vec2<float>& p1);
+	uint8_t GetCodeCohenSutherland(Vec2<float>& point);
+
 private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain>				pSwapChain;
 	Microsoft::WRL::ComPtr<ID3D11Device>				pDevice;

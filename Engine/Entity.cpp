@@ -85,5 +85,5 @@ Drawable Entity::GetDrawable() const
 
 Rect<float> Entity::GetBoundingRect() const
 {
-	return Rect<float>();
+	return boundingRect;
 }
