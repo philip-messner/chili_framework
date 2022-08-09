@@ -30,6 +30,7 @@
 #include <random>
 #include <algorithm>
 #include "Rect.h"
+#include "MouseCameraControler.h"
 
 class Game
 {
@@ -70,8 +71,6 @@ private:
 
 	CoordinateTransformer ct;
 	Camera cam;
+	MouseCameraController camCntrl;
 	std::vector<StarBro> stars;
-
-	Rect<float> testRect = { {-100.0f, -100.0f}, 50.0f, 50.0f };
-	Rect<float> testRect2 = { {100.0f, 100.0f}, 100.0f, 100.0f };
 };

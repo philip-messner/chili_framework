@@ -27,6 +27,10 @@ public:
 	{
 		return Vec2(x * rhs, y * rhs);
 	}
+	Vec2 operator/(T rhs) const
+	{
+		return Vec2(x / rhs, y / rhs);
+	}
 	Vec2& operator*=(T rhs)
 	{
 		return *this = *this * rhs;

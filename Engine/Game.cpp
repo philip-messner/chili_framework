@@ -30,7 +30,8 @@ Game::Game(MainWindow& wnd)
 	wnd(wnd),
 	gfx(wnd),
 	ct(gfx),
-	cam(ct)
+	cam(ct),
+	camCntrl(wnd.mouse, cam)
 {
 	std::mt19937 rng(std::random_device{}());
 	std::uniform_real_distribution<float> xDist(-worldWidth / 2.0f, worldWidth / 2.0f);
@@ -67,7 +68,8 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-	const float speed = 3.0f;
+	camCntrl.Update();
+	/*const float speed = 10.0f;
 	if (wnd.kbd.KeyIsPressed(VK_DOWN))
 	{
 		cam.MoveBy({ 0.0f, -1.0f * speed });
@@ -91,14 +93,8 @@ void Game::UpdateModel()
 	if (wnd.kbd.KeyIsPressed('A'))
 	{
 		cam.SetZoom(cam.GetZoom() * 0.95f);
-	}
-	if (wnd.kbd.KeyIsPressed('T'))
-	{
-		if (testRect.isOverlappingWith(testRect2))
-		{
-			cam.SetZoom(cam.GetZoom() * 0.95f);
-		}
-	}
+	}*/
+	
 }
 
 void Game::ComposeFrame()
