@@ -253,28 +253,30 @@ Graphics::~Graphics()
 	if( pImmediateContext ) pImmediateContext->ClearState();
 }
 
-bool Graphics::CohenSutherlandLineClip(Vec2<float>& p0, Vec2<float>& p1)
+bool Graphics::CohenSutherlandLineClip(int& x1, int& y1, int& x2, int& y2)
 {
 	const uint8_t INSIDE = 0u;
 	const uint8_t LEFT = 1u;
 	const uint8_t RIGHT = 2u;
 	const uint8_t BOTTOM = 4u;
 	const uint8_t TOP = 8u;
+	float y_max = float(Graphics::ScreenHeight - 1);
+	float y_min = 0.0f;
+	float x_max = float(Graphics::ScreenWidth - 1);
+	float x_min = 0.0f;
 
-	uint8_t code1 = GetCodeCohenSutherland(p0);
-	uint8_t code2 = GetCodeCohenSutherland(p1);
+	uint8_t code1 = GetCodeCohenSutherland(x1, y1);
+	uint8_t code2 = GetCodeCohenSutherland(x2, y2);
 
 	bool accept = false;
-	while (true)
-	{
-		if ((code1 == 0) && (code2 == 0))
-		{
+
+	while (true) {
+		if ((code1 == 0) && (code2 == 0)) {
 			// If both endpoints lie within rectangle
 			accept = true;
 			break;
 		}
-		else if (code1 & code2)
-		{
+		else if (code1 & code2) {
 			// If both endpoints are outside rectangle,
 			// in same region
 			break;
@@ -297,35 +299,37 @@ bool Graphics::CohenSutherlandLineClip(Vec2<float>& p0, Vec2<float>& p1)
 			// x = x1 + (1 / slope) * (y - y1)
 			if (code_out & TOP) {
 				// point is above the clip rectangle
-				x = p0.x + (p1.x - p0.x) * (Graphics::ScreenHeight - 1 - p0.y) / (p1.y - p0.y);
-				y = Graphics::ScreenHeight - 1;
+				x = x1 + (x2 - x1) * (y_max - y1) / (y2 - y1);
+				y = y_max;
 			}
 			else if (code_out & BOTTOM) {
 				// point is below the rectangle
-				x = p0.x + (p1.x - p0.x) * (0 - p0.y) / (p1.y - p0.y);
-				y = 0;
+				x = x1 + (x2 - x1) * (y_min - y1) / (y2 - y1);
+				y = y_min;
 			}
 			else if (code_out & RIGHT) {
 				// point is to the right of rectangle
-				y = p0.y + (p1.y - p0.y) * (Graphics::ScreenWidth - 1 - p0.x) / (p1.x - p0.x);
-				x = Graphics::ScreenWidth - 1;
+				y = y1 + (y2 - y1) * (x_max - x1) / (x2 - x1);
+				x = x_max;
 			}
 			else if (code_out & LEFT) {
 				// point is to the left of rectangle
-				y = p0.y + (p1.y - p0.y) * (0 - p0.x) / (p1.x - p0.x);
-				x = 0;
+				y = y1 + (y2 - y1) * (x_min - x1) / (x2 - x1);
+				x = x_min;
 			}
 
 			// Now intersection point x, y is found
 			// We replace point outside rectangle
 			// by intersection point
 			if (code_out == code1) {
-				p0 = { x, y };
-				code1 = GetCodeCohenSutherland(p0);
+				x1 = (int)x;
+				y1 = (int)y;
+				code1 = GetCodeCohenSutherland(x1, y1);
 			}
 			else {
-				p1 = { x, y };
-				code2 = GetCodeCohenSutherland(p1);
+				x2 = (int)x;
+				y2 = (int)y;
+				code2 = GetCodeCohenSutherland(x2, y2);
 			}
 		}
 	}
@@ -333,7 +337,7 @@ bool Graphics::CohenSutherlandLineClip(Vec2<float>& p0, Vec2<float>& p1)
 	
 }
 
-uint8_t Graphics::GetCodeCohenSutherland(Vec2<float>& point)
+uint8_t Graphics::GetCodeCohenSutherland(int x, int y)
 {
 	const uint8_t INSIDE = 0u;
 	const uint8_t LEFT = 1u;
@@ -343,16 +347,65 @@ uint8_t Graphics::GetCodeCohenSutherland(Vec2<float>& point)
 
 	uint8_t code = INSIDE;
 
-	if (point.x < 0)
+	if (x < 0)
 		code |= LEFT;
-	else if (point.x > Graphics::ScreenWidth - 1)
+	else if (x > Graphics::ScreenWidth - 1)
 		code |= RIGHT;
-	if (point.y < 0)
+	if (y < 0)
 		code |= BOTTOM;
-	else if (point.y > Graphics::ScreenHeight - 1)
+	else if (y > Graphics::ScreenHeight - 1)
 		code |= TOP;
 
 	return code;
+}
+
+void Graphics::BresenhamsLineGen(int x1, int y1, int x2, int y2, int dx, int dy, int decide, Color c)
+{
+	//pk is initial decision making parameter
+	//Note:x1&y1,x2&y2, dx&dy values are interchanged
+	//and passed in plotPixel function so
+	//it can handle both cases when m>1 & m<1
+	int pk = 2 * dy - dx;
+	for (int i = 0; i < dx; i++)
+	{
+		//checking either to decrement or increment the value
+		//if we have to plot from (0,100) to (100,0)
+		x1 < x2 ? x1++ : x1--;
+		if (pk < 0)
+		{
+			//decision value will decide to plot
+			//either  x1 or y1 in x's position
+			if (decide == 0)
+			{
+				// putpixel(x1, y1, RED);
+				PutPixel(x1, y1, c);
+				pk = pk + 2 * dy;
+			}
+			else
+			{
+				//(y1,x1) is passed in xt
+			   // putpixel(y1, x1, YELLOW);
+				PutPixel(y1, x1, c);
+				pk = pk + 2 * dy;
+			}
+		}
+		else
+		{
+			y1 < y2 ? y1++ : y1--;
+			if (decide == 0)
+			{
+				PutPixel(x1, y1, c);
+				//putpixel(x1, y1, RED);
+			}
+			else
+			{
+				//  putpixel(y1, x1, YELLOW);
+				PutPixel(y1, x1, c);
+			}
+			pk = pk + 2 * dy - 2 * dx;
+		}
+	}
+
 }
 
 void Graphics::EndFrame()
@@ -468,68 +521,30 @@ void Graphics::DrawCircle(int x, int y, int radius, Color c, bool fill, int weig
 
 void Graphics::DrawLine(Vec2<float> p0, Vec2<float> p1, Color c)
 {
-	
-	if (!(this->CohenSutherlandLineClip(p0, p1)))
+	int x1 = (int)round(p0.x);
+	int y1 = (int)round(p0.y);
+	int x2 = (int)round(p1.x);
+	int y2 = (int)round(p1.y);
+
+
+	if (!(CohenSutherlandLineClip(x1, y1, x2, y2)))
 		return;
 
-	if (p0.x == p1.x)
+	int dx = abs(x2 - x1);
+	int dy = abs(y2 - y1);
+
+	if (dx > dy)
 	{
-		if (p0.y > p1.y)
-		{
-			std::swap(p0, p1);
-		}
-		for (int y = (int)p0.y; y <= (int)p1.y; y++)
-		{
-			int x = (int)p0.x;
-			/*if (x >= 0 && x < Graphics::ScreenWidth && y >= 0 && y < Graphics::ScreenHeight)
-			{
-				PutPixel(x, y, c);
-			}*/
-			PutPixel(x, y, c);
-		}
+		//passing argument as 0 to plot(x,y)
+		BresenhamsLineGen(x1, y1, x2, y2, dx, dy, 0, c);
 	}
+	//if slope is greater than or equal to 1
 	else
 	{
-		float m = 0.0f;
-		if (p0.x > p1.x)
-		{
-			std::swap(p0, p1);
-		}
-		m = (p1.y - p0.y) / (p1.x - p0.x);
-		if (std::abs(m) <= 1.0f)
-		{
-			const float b = p0.y - m * p0.x;
-			for (int x = (int)p0.x; x <= (int)p1.x; x++)
-			{
-				const float y = m * (float)x + b;
-				const int yClip = (int)y;
-				/*if (x >= 0 && x < Graphics::ScreenWidth && yClip >= 0 && yClip < Graphics::ScreenHeight)
-				{
-					PutPixel(x, yClip, c);
-				}*/
-				PutPixel(x, yClip, c);
-			}
-		}
-		else
-		{
-			if (p0.y > p1.y)
-			{
-				std::swap(p0, p1);
-			}
-			const float w = (p1.x - p0.x) / (p1.y - p0.y);
-			const float p = p0.x - w * p0.y;
-			for (int y = (int)p0.y; y <= (int)p1.y; y++)
-			{
-				const float x = w * (float)y + p;
-				const int xClip = (int)x;
-				/*if (xClip >= 0 && xClip < Graphics::ScreenWidth && y >= 0 && y < Graphics::ScreenHeight)
-				{
-					PutPixel(xClip, y, c);
-				}*/
-				PutPixel(xClip, y, c);
-			}
-		}
+		//passing argument as 1 to plot (y,x)
+		BresenhamsLineGen(y1, x1, y2, x2, dy, dx, 1, c);
 	}
+	
 	
 
 }

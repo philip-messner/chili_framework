@@ -68,8 +68,9 @@ public:
 	~Graphics();
 
 private:
-	bool CohenSutherlandLineClip(Vec2<float>& p0, Vec2<float>& p1);
-	uint8_t GetCodeCohenSutherland(Vec2<float>& point);
+	bool CohenSutherlandLineClip(int& x0, int& y0, int& x1, int& y1);
+	uint8_t GetCodeCohenSutherland(int x, int y);
+	void BresenhamsLineGen(int x1, int y1, int x2, int y2, int dx, int dy, int decide, Color c);
 
 private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain>				pSwapChain;
